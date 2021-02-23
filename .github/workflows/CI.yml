@@ -12,20 +12,20 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        redis:
-          image: redis
-          ports: ['6379:6379']
-          options: --entrypoint redis-server
+      redis:
+        image: redis
+        ports: ['6379:6379']
+        options: --entrypoint redis-server
 
     steps:
       - uses: action/checkout@v1
       - name: Setup Ruby
         uses: actions/setup-ruby@v1
         with:
-          ruby-version. 2.6.x
+          ruby-version. 2.7.x
       - uses: borales/actions-yarn@v2.0.0
         with:
-          cmd: instal
+          cmd: install
       - name: Build and run tests
         env:
           DATABASE_URL: postgres://postgres:@localhost:5432/test
