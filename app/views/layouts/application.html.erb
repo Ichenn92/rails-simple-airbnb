@@ -10,6 +10,14 @@
   </head>
 
   <body>
-    <%= yield %>
+
+    <%= render partial: 'components/navbar' %>
+
+    <div class="container">
+      <%= yield %>
+    </div>
+
+    <%= render partial: 'components/footer' %>
+    
   </body>
 </html>

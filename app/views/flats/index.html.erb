@@ -1,0 +1,7 @@
+<div class="row">
+  <% @flats.each do |flat| %>
+    <div class="col-12 col-md-4">
+      <%= render partial: 'product_card', locals: { flat: flat } %>
+    </div>
+  <% end %>
+</div>
