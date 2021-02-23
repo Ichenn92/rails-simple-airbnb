@@ -4,7 +4,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     services:
-      db:
+      postgres:
         image: postgres:13
         env:
           POSTGRES_USER: postgres
