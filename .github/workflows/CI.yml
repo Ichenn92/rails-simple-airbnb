@@ -1,59 +1,45 @@
 name: CI
-
-on:
-  pull_request:
-    branches:
-      - 'master'
-  push:
-    branches:
-      - 'master'
-
+on: [push, pull_request]
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
-
     services:
       postgres:
-        image: postgres
+        image: postgres:13
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        ports:
-          - 5432:5432
+      redis:
+        image: redis
+        ports: ['6379:6379']
+        options: --entrypoint redis-server
 
     steps:
-    - uses: actions/checkout@v1
+      - name: Check out repository
+        uses: actions/checkout@v1
+      - name: Setup Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.7.x
+      - uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: install
+      - name: Build and run tests
+        env:
+          DATABASE_URL: postgres://postgres:@localhost:5432/test
+          REDIS_URL: redis://localhost6379/0
+          RAILS_ENV: test
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+        run: |
+          sudo apt-get -yqq install libpq-dev
+          gem install bundler
+          bundle install --jobs 4 --retry 3
+          bundle exec rails db:prepare
+          bundle exec rails test
 
-    - uses: ruby/setup-ruby@v1
-      with:
-        bundler-cache: true
-
-    - name: Install PostgreSQL client
-      run: |
-        sudo apt-get -yqq install libpq-dev
-
-    - name: Build App
-      env:
-        PGHOST: localhost
-        PGUSER: postgres
-        PGPASSWORD: postgres
-        RAILS_ENV: test
-      run: |
-        bin/rails db:setup
-
-    - name: Run Tests
-      env:
-        PGHOST: localhost
-        PGUSER: postgres
-        PGPASSWORD: postgres
-        RAILS_ENV: test
-      run: |
-        gem install bundler
-        bundle install --jobs 4 --retry 3
-        bundle exec rails db:prepare
-        bundle exec rails test
