@@ -18,7 +18,8 @@ jobs:
         options: --entrypoint redis-server
 
     steps:
-      - uses: action/checkout@v1
+      - name: Check out repository
+        uses: actions/checkout@v1
       - name: Setup Ruby
         uses: actions/setup-ruby@v1
         with:
