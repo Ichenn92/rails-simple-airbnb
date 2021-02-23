@@ -7,21 +7,15 @@ development:
   <<: *default
   database: nps_development
   encoding: unicode
-username: tristanhorler
-password:
 
 test:
   <<: *default
   database: nps_test
   encoding: unicode
-  username: tristanhorler
-  password:
 
 
 production:
   <<: *default
   database: nps_production
   encoding: unicode
-  username: tristanhorler
-  password:
 
